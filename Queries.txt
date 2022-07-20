@@ -1,0 +1,54 @@
+/* Query 1 */
+
+SELECT e.EmployeeId, e.FirstName ||' '|| e.LastName "Employee Name", count(c.CustomerId) "Total Served Customers"
+FROM Employee e
+LEFT JOIN Customer c
+ON c.SupportRepid = e.EmployeeId
+WHERE e.Title='Sales Support Agent'
+Group BY 1
+ORDER BY 3 DESC;
+
+
+
+/* Query 2 */
+SELECT  g.Name 'Genre', count(*) 'Nb of Songs Sold'
+FROM Customer c
+JOIN Invoice i
+ON i.CustomerId=c.CustomerId
+JOIN InvoiceLine il
+ON il.InvoiceId=i.InvoiceId
+JOIN Track t
+ON il.TrackId=t.TrackId
+JOIN Genre g
+ON t.GenreId= g.GenreId 
+Group By  g.Name
+ORDER By 2 DESC;
+
+
+
+
+/* Query 3 */
+SELECT  t.Country, max(t.Total)'MaxPurchases', t.CustomerId, t.FirstName,t.LastName
+FROM 
+(Select c.Country, c.CustomerId,c.FirstName, c.LastName, sum(total) 'Total'
+FROM Customer c
+JOIN Invoice i
+ON i.CustomerId= c.CustomerId
+GROUP BY c.Country,c.CustomerId
+ORDER BY 1
+) t
+GROUP BY t.Country
+ORDER BY t.Country ;
+
+
+
+
+/* Query 4 */
+Select  g.Name, sum(il.UnitPrice*Quantity) 'TotalGenreSales'
+FROM InvoiceLine il
+JOIN Track t
+ON il.TrackId=t.TrackId
+Join Genre g
+ON t.GenreId=g.GenreId
+Group By g.Name
+Order by  TotalGenreSales DESC;
